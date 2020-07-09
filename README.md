@@ -14,7 +14,13 @@ This app was designed to provide shortcut-assisted manual time-stamping of subti
 
 ## Page Layout
 
-The page layout of transcript2sub is divided into three modules.  These are: video, transcript, and tracks.  Accordingly, the browser window is divided up into respective thirds containing said modules; there is currently no mobile version of the applet.
+The page layout of transcript2sub is divided into three modules.  These are: video, transcript, and tracks.  Accordingly, the browser window is divided up into respective thirds containing said modules, as pictured here:
+
+![Screen-shot of the applet](assets/applet_screen.png)
+
+
+
+there is currently no mobile version of the applet.
 
 ## UIUX
 
