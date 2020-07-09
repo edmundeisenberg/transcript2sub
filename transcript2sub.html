@@ -1,0 +1,310 @@
+
+<style>
+
+.app_container
+{
+  display:block;
+  width:100%;
+}
+
+.menu
+{
+	
+}
+
+.column_third
+{
+  width : 33.333%;
+  display: inline-block;
+  top:0;
+  float: left;
+  height:70vh;
+  overflow-y: scroll;
+}
+
+.column_half
+{
+  width: 50%;
+  display: inline-block;
+  top:0;
+  float: left;
+  height:70vh;
+  overflow-y: scroll;
+}
+
+.title
+{
+  text-align: center;
+  font-weight: bold;
+}
+
+.text
+{
+    display:inline-block;
+}
+
+.heads_up
+{
+  display: inline-block;
+  color: blue;
+/* 
+  float:left;
+ */
+}
+
+.flag
+{
+  color: red;
+	background:yellow;
+}
+
+
+
+</style>
+
+<head>
+<!-- 
+	include $
+ -->
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<html>
+	<body>
+		<div class='app_container'>
+			<div class='menu'>
+				<div class='title'>
+					VTT Tracker
+				</div>
+			</div>
+			<div class='column_third' id='video_column'>
+				<div>
+				Playback rate:&nbsp;<div class='heads_up' id='signal'>0.75</div>X&nbsp;(Change with Number keys)
+				</div>
+				<div id='playhead_counter' style='display:none;'>
+				</div>
+				<div id='mp4_submission'>
+					<input id='mp4_url' placeholder='PASTE MP4 URL'>
+					<input type='button' id='submit_mp4' value='Ok'>
+				</div>
+				<video style='width:33.333vw;' id='active_video'>
+				</video>
+			</div>
+			<div class='column_third' id='transcript_column'>
+				<div class='text'>Please click blocks as they&apos;re spoken...</div>
+				
+				<div id='transcript_submission'>
+					<textarea placeholder='PASTE TRANSCRIPT HERE' id='transcript_entry' style='height:80%;width:85%;'></textarea>
+					<input id='submit_transcript' value='Submit'>
+				</div>
+				<div id='transcript_renderer' style='overflow-y:scroll;'>
+				</div>
+			</div>
+			<div class='column_third' id='vtt_column'>
+				<div class='title'>
+					
+				</div>
+				<div id='url_flag' class='flag'>
+					Please enter video URL
+				</div>
+				<div id='transcript_flag' class='flag'>
+					Please paste the video transcript
+				</div>
+				<div id='vtt_renderer' style='overflow-y:scroll;white-space: pre;'>WEBVTT&NewLine;&NewLine;00:00:01.000 -->&nbsp;</div>
+				<div id='download_vtt' style='display:none;'>
+					Download VTT
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script>
+
+	// change when source video, transcript are provided
+var video_loaded = false;
+var transcript_loaded = false;
+var running=false;
+
+	// holder for video element
+var video;
+
+	// default speed
+var speed=1.0;
+
+	// keyboard case switch
+$(document).keypress(function(e) {
+	var ee = e.which;
+	console.log(ee);
+	if(running){
+		switch(ee){
+			case 49:
+				speed=.5;
+				break;
+			case 50:
+				speed=.75;
+				break;
+			case 51:
+				speed=1.0;
+				break;
+			case 52:
+				speed=1.25;
+				break;
+			case 53:
+				speed=1.5;
+				break;
+			case 54:
+				speed=1.75;
+				break;
+			case 55:
+				speed=2.0;
+				break;
+			case 56:
+				speed=2.25;
+				break;
+			case 57:
+				speed=2.5;
+				break;
+		}
+			// update display
+		$("#signal").html(speed);
+			// change playback rate
+      	video.playbackRate=speed;
+	}
+});
+
+$("#submit_mp4").click(function () {
+	// load the video from link supplied
+  var video_url = document.getElementById("mp4_url").value;
+  var video_html='<source src="' + video_url + '"/>';
+  $("#active_video").html(video_html);
+  	// resize the player
+  var video_width = $("#video_column").width();
+  document.getElementById("active_video").style.width = ''+video_width-12;
+	//
+  document.getElementById("mp4_submission").style.display = "none";
+  document.getElementById("url_flag").style.display = "none";
+
+  video = $("#active_video")[0];
+  video.playbackRate= .75;
+  
+  	// check if both sources are supplied
+  video_loaded = true;
+  if(transcript_loaded){
+  	runTracker();
+  }
+});
+
+$("#submit_transcript").click(function () {
+	var transcript_text=document.getElementById("transcript_entry").value;
+		// hide submission elements
+	document.getElementById("transcript_submission").style.display = "none";
+	document.getElementById("transcript_flag").style.display = "none";
+
+		// create holder for parsed transcript
+	var parsed_transcript=transcript_text;
+
+		
+	//parsed_transcript += transcript_text;
+		// break up transcript by punctuation initially for smoother blocks
+	parsed_transcript = parsed_transcript.split('?').join('?</p><p>');
+	parsed_transcript = parsed_transcript.split('!').join('!</p><p>');
+	parsed_transcript = parsed_transcript.split(".").join(".</p><p>");
+	parsed_transcript = parsed_transcript.split(",").join(",</p><p>");
+	parsed_transcript = parsed_transcript.split("–").join("–</p><p>");
+	//parsed_transcript += "</p>";
+
+	var phrases = parsed_transcript.split("</p><p>");
+	word_chunks=[];
+
+	var id_count = 0;
+	var id_tag="";
+
+		// basically creates blocks of MINIMUM 24 words each
+	for(i=0;i<phrases.length;i++){
+			// make sure not to cut off any special characters
+		if(phrases[i].length>2 && phrases[i].charAt(0) != "\""){
+		  word_chunk = phrases[i];
+			// check if meets minimum word count is met or adds more words to chunk
+		  while (word_chunk.split(" ").length<=24){
+			i++;
+				// add the next phrase
+			word_chunk+=" "+phrases[i]
+			phrases.push("");
+		  }
+		  
+		  tagged_chunk='</p><p>'+word_chunk;
+		  word_chunks.push(tagged_chunk);
+		  id_count++;
+		}else{
+		  last_index = word_chunks.length-1;
+		  word_chunks[last_index]+=phrases[i];
+		}
+	}
+	
+		// join all work chunks
+	render_transcript=word_chunks.join("");
+	
+		// and add them to DOM
+	$("#transcript_renderer").html('<p>' + render_transcript+'</p>');
+	
+		// check if both sources are supplied
+	transcript_loaded = true;
+	if (video_loaded){
+		runTracker();
+	}
+})
+
+$("#transcript_renderer").on("click",'p',function(){
+		// hide the word chunk
+    $(this).slideUp();
+    var additive_text = "";
+    current_timestamp = convert_timestamp(video.currentTime);
+    additive_text+=current_timestamp + "\n" + this.textContent.replace(/\r?\n|\r/g,"") + "\n\n" + current_timestamp + " --> ";
+
+    var vtt_text = document.getElementById("vtt_renderer").textContent + additive_text;
+    document.getElementById("vtt_renderer").textContent=vtt_text;
+
+  })
+
+
+function convert_timestamp(seconds){
+  return "" + ("0"+(Math.floor(seconds/3600)%60)).slice(-2)+":"+("0"+(Math.ceil(seconds/60)-1)%60).slice(-2) + ":" + ("0"+Math.ceil(seconds%60)).slice(-2)+ (seconds%Math.floor(seconds)).toPrecision(3).substring(1,5);
+}
+
+// $("#download_vtt").click(function(){
+//   var blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});//
+//   //saveAs(blob, "hello world.txt");	//
+//   this.download="helloworld.txt";
+// })
+
+// Start file download.
+document.getElementById("download_vtt").addEventListener("click", function(){
+    	//remove last line of vtt content
+    var text = document.getElementById("vtt_renderer").textContent;
+    var text_lines = text.split('\n');
+    		// thanks https://love2dev.com/blog/javascript-remove-from-array/
+    text_lines.pop();
+    text = text_lines.join('\n');
+    var filename = "tracks.vtt";
+   download(filename, text);
+}, false);
+
+//code from https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
+function download(filename, text) {
+  var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+function runTracker(){
+  running = true;
+  document.getElementById("download_vtt").style.display = "block";
+  setInterval(function(){
+    video.play();
+  }, 100);
+}
+</script>
