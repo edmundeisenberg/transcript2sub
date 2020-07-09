@@ -22,9 +22,37 @@ The page layout of transcript2sub is divided into three modules.  These are: vid
 
 there is currently no mobile version of the applet.
 
+## Content Registration
+
+Before the UIUX becomes operable, the user must submit both a URL where the video is located and the full transcript body.  After this happens, 
+
+<code>
+$("#submit_mp4").click(function () {
+	// load the video from link supplied
+  var video_url = document.getElementById("mp4_url").value;
+  var video_html='<source src="' + video_url + '"/>';
+  $("#active_video").html(video_html);
+  	// resize the player
+  var video_width = $("#video_column").width();
+  document.getElementById("active_video").style.width = ''+video_width-12;
+	//
+  document.getElementById("mp4_submission").style.display = "none";
+  document.getElementById("url_flag").style.display = "none";
+
+  video = $("#active_video")[0];
+  video.playbackRate= .75;
+  
+  	// check if both sources are supplied
+  video_loaded = true;
+  if(transcript_loaded){
+  	runTracker();
+  }
+});
+</code>
+
 ## UIUX
 
-  The functionality of each module is explained in greater detail henceforth.
+
 
 ### Video
 
