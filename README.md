@@ -26,6 +26,7 @@ there is currently no mobile version of the applet.
 
 Before the UIUX becomes operable, the user must submit both a URL where the video is located and the full transcript body.  After this happens, 
 
+Video Registration:
 <code>
 
 	$("#submit_mp4").click(function () {
@@ -51,6 +52,70 @@ Before the UIUX becomes operable, the user must submit both a URL where the vide
 		   runTracker();
 		}
 	});
+</code>
+
+Transcript Registration:
+<code>
+	$("#submit_transcript").click(function () {
+		var transcript_text=document.getElementById("transcript_entry").value;
+			// hide submission elements
+		document.getElementById("transcript_submission").style.display = "none";
+		document.getElementById("transcript_flag").style.display = "none";
+
+			// create holder for parsed transcript
+		var parsed_transcript=transcript_text;
+
+		
+		//parsed_transcript += transcript_text;
+			// break up transcript by punctuation initially for smoother blocks
+		parsed_transcript = parsed_transcript.split('?').join('?</p><p>');
+		parsed_transcript = parsed_transcript.split('!').join('!</p><p>');
+		parsed_transcript = parsed_transcript.split(".").join(".</p><p>");
+		parsed_transcript = parsed_transcript.split(",").join(",</p><p>");
+		parsed_transcript = parsed_transcript.split("–").join("–</p><p>");
+		//parsed_transcript += "</p>";
+
+		var phrases = parsed_transcript.split("</p><p>");
+		word_chunks=[];
+
+		var id_count = 0;
+		var id_tag="";
+
+			// basically creates blocks of MINIMUM 24 words each
+		for(i=0;i<phrases.length;i++){
+				// make sure not to cut off any special characters
+			if(phrases[i].length>2 && phrases[i].charAt(0) != "\""){
+			  word_chunk = phrases[i];
+				// check if meets minimum word count is met or adds more words to chunk
+			  while (word_chunk.split(" ").length<=24){
+				i++;
+					// add the next phrase
+				word_chunk+=" "+phrases[i]
+				phrases.push("");
+			  }
+		  
+			  tagged_chunk='</p><p>'+word_chunk;
+			  word_chunks.push(tagged_chunk);
+			  id_count++;
+			}else{
+			  last_index = word_chunks.length-1;
+			  word_chunks[last_index]+=phrases[i];
+			}
+		}
+	
+			// join all work chunks
+		render_transcript=word_chunks.join("");
+	
+			// and add them to DOM
+		$("#transcript_renderer").html('<p>' + render_transcript+'</p>');
+	
+			// check if both sources are supplied
+		transcript_loaded = true;
+		if (video_loaded){
+			runTracker();
+		}
+	})
+
 </code>
 
 ## UIUX
