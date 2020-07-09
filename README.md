@@ -27,6 +27,7 @@ there is currently no mobile version of the applet.
 Before the UIUX becomes operable, the user must submit both a URL where the video is located and the full transcript body.  After this happens, 
 
 <code>
+
 	$("#submit_mp4").click(function () {
 	
 		// load the video from link supplied	
