@@ -27,33 +27,35 @@ there is currently no mobile version of the applet.
 Before the UIUX becomes operable, the user must submit both a URL where the video is located and the full transcript body.  After this happens, 
 
 <code>
+
 $("#submit_mp4").click(function () {
 
-// load the video from link supplied	
+	// load the video from link supplied	
 
-var video_url = document.getElementById("mp4_url").value;
-var video_html='<source src="' + video_url + '"/>';
-$("#active_video").html(video_html);
+	var video_url = document.getElementById("mp4_url").value;
+	var video_html='<source src="' + video_url + '"/>';
+	$("#active_video").html(video_html);
 
-// resize the player
+	// resize the player
 
-var video_width = $("#video_column").width();
-document.getElementById("active_video").style.width = ''+video_width-12;
+	var video_width = $("#video_column").width();
+	document.getElementById("active_video").style.width = ''+video_width-12;
 
-// hide the form and flag 
+	// hide the form and flag 
 
-document.getElementById("mp4_submission").style.display = "none";
-document.getElementById("url_flag").style.display = "none";
-video = $("#active_video")[0];
-video.playbackRate= .75;
+	document.getElementById("mp4_submission").style.display = "none";
+	document.getElementById("url_flag").style.display = "none";
+	video = $("#active_video")[0];
+	video.playbackRate= .75;
 
-// check if both sources are supplied
+	// check if both sources are supplied
 
-video_loaded = true;
-if(transcript_loaded){
-   runTracker();
-}
+	video_loaded = true;
+	if(transcript_loaded){
+	   runTracker();
+	}
 });
+
 </code>
 
 ## UIUX
