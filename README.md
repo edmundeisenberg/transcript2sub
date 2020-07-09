@@ -55,7 +55,10 @@ Video Registration:
 </code>
 
 Transcript Registration:
+
+This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***
 <code>
+
 	$("#submit_transcript").click(function () {
 		var transcript_text=document.getElementById("transcript_entry").value;
 			// hide submission elements
