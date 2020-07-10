@@ -26,7 +26,7 @@ there is currently no mobile version of the applet.
 
 Before the UIUX becomes operable, the user must submit both a URL where the video is located and the full transcript body.  After this happens, 
 
-Video Registration:
+##### Video Registration
 <code>
 
 	$("#submit_mp4").click(function () {
@@ -54,7 +54,7 @@ Video Registration:
 	});
 </code>
 
-Transcript Registration:
+##### Transcript Registration
 
 This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***  
 
