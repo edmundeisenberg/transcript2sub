@@ -150,9 +150,9 @@ This function *a)* enables the track-download button ([detailed below]) and
 
 #### Time-Stamp Calculator
 
-This is just a big function that converts a quantity in seconds* into a time-stamp in the format, *HH:MM:S.SSS*
+This is just a big function that converts a quantity in seconds* into a String-representation of a time-stamp in the format, *HH:MM:S.SSS*
 
-*Note: this may be a decimal
+*Note: this may be a decimal.
 ```
 function convert_timestamp(seconds){
   return "" + ("0"+(Math.floor(seconds/3600)%60)).slice(-2)+":"+("0"+(Math.ceil(seconds/60)-1)%60).slice(-2) + ":" + ("0"+Math.ceil(seconds%60)).slice(-2)+ (seconds%Math.floor(seconds)).toPrecision(3).substring(1,5);
@@ -160,6 +160,8 @@ function convert_timestamp(seconds){
 ```
 
 #### Video Speed Controls
+
+In the interest of accelerating the manual time-stamping process, a rudimentary video-speed UX was implemented by a keypress listener attenuated to number keys via a case-switch.  **1-9** correspond to playback-speed coefficients ranging from .5-2.5 X the normal speed, with **3** corresponding to a coefficient of 1.  Note that the case-switch is only evaluated in the case of `running`, one of the [monitoring variables](#Monitoring-Variables) that is activated upon initial registration.
 
 ```
 	// keyboard input event handler case switch
