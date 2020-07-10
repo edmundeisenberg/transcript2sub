@@ -152,7 +152,7 @@ This function *a)* enables the track-download button ([detailed below]) and
 
 This is just a big function that converts a quantity in seconds* into a time-stamp in the format, *HH:MM:S.SSS*
 
-* Note: this may be a decimal
+**Note: this may be a decimal**
 ```
 function convert_timestamp(seconds){
   return "" + ("0"+(Math.floor(seconds/3600)%60)).slice(-2)+":"+("0"+(Math.ceil(seconds/60)-1)%60).slice(-2) + ":" + ("0"+Math.ceil(seconds%60)).slice(-2)+ (seconds%Math.floor(seconds)).toPrecision(3).substring(1,5);
@@ -237,4 +237,8 @@ function download(filename, text) {
 ## Further Development
 
 (in email mention that click-scrolling elements aren't that hard)
+
+## Acknowledgements:
+https://www.markdownguide.org/extended-syntax
+https://www.markdownguide.org/extended-syntax
 
