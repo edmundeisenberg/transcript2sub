@@ -144,7 +144,10 @@ When the video and transcript have both been successfully inputted, `runTracker(
 
 #### runTracker()
 
-This function *a)* enables the track-download button ([detailed below]) and 
+This function 
+* sets `running` to true (see [monitoring variables](#Monitoring-Variables)), indicating the time-stamping interface is active
+* enables the track-download button ([detailed below](#VTT-Output)) to save subtitles to file
+* initiates playback of the video at a speed of .75X
 
 #### Click Events
 
@@ -161,7 +164,7 @@ function convert_timestamp(seconds){
 
 #### Video Speed Controls
 
-In the interest of accelerating the manual time-stamping process, a rudimentary video-speed UX was implemented by a keypress listener attenuated to number keys via a case-switch.  **1-9** correspond to playback-speed coefficients ranging from .5-2.5 X the normal speed, with **3** corresponding to a coefficient of 1.  Note that the case-switch is only evaluated if `running` has been set to `true`, one of the [monitoring variables](#Monitoring-Variables) that is activated upon initial registration.
+In the interest of accelerating the manual time-stamping process, a rudimentary video-speed UX was implemented by a keypress listener attenuated to number keys via a case-switch.  **1-9** correspond to playback-speed coefficients ranging from .5-2.5 X the normal speed, with **3** corresponding to a coefficient of 1.  Note that the case-switch is only evaluated if `running` has been set to `true` by invoking [`runTracker()`](#runTracker).
 
 ```
 	// keyboard input event handler case switch
