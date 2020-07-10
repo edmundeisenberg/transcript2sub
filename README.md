@@ -1,4 +1,4 @@
-Documentation for Robot History VTT tracker
+Documentation for Robot History VTT Tracker Tool
 
 ## Premise
 
@@ -24,6 +24,10 @@ AND: VTT MODULE SHOULD SCROLL AS IT ACCUMULATES
 This is %
 
 [all the code may be viewed by right clicking on the page and selecting (view source)]
+
+## Note on the VTT Format
+
+For documentation of the VTT format please go to [Mozilla's WebVTT guide](https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API).
 
 ## Content Registration
 
@@ -145,11 +149,28 @@ When the video and transcript have both been successfully inputted, `runTracker(
 #### runTracker()
 
 This function 
-* sets `running` to true (see [monitoring variables](#Monitoring-Variables)), indicating the time-stamping interface is active
-* enables the track-download button ([detailed below](#VTT-Output)) to save subtitles to file
-* initiates playback of the video at a speed of .75X
+* sets `running` to true (see [monitoring variables](#Monitoring-Variables)), indicating the time-stamping interface is active.
+* enables the *Download VTT* button ([detailed below](#VTT-Output)) to save subtitles to file.
+* initiates playback of the video at a speed of .75X.
 
 #### Click Events
+
+The procedural production of subtitle tracks hinges on this particular step.  Since [word-groups were embedded into `<p>` elements before being appended into the `<div id=transcript_renderer>`](#Transcript-Registration), each `<p>` element may be assigned the same onClick functionality. This event handler incrementally hides word groups as they are clicked while also copying them into a single, time-stamped [*cue*](#Note-on-the-WebVTT-Format). Note that each click event completes the current cue's time-stamp interval while beginning the next one's.  This ensures that consecutive cues persist on-screen until the next cue begins.
+
+```
+$("#transcript_renderer").on("click",'p',function(){
+		// hide the word group
+    $(this).slideUp();
+    	//initialize cue to add to the track
+    var cue = "";
+    current_timestamp = convert_timestamp(video.currentTime);
+    cue+=current_timestamp + "\n" + this.textContent.replace(/\r?\n|\r/g,"") + "\n\n" + current_timestamp + " --> ";
+
+    var vtt_text = document.getElementById("vtt_renderer").textContent + cue;
+    document.getElementById("vtt_renderer").textContent=vtt_text;
+
+})
+```
 
 #### Time-Stamp Calculator
 
@@ -170,7 +191,6 @@ In the interest of accelerating the manual time-stamping process, a rudimentary 
 	// keyboard input event handler case switch
 $(document).keypress(function(e) {
 	var keycode = e.which;
-	console.log(ee);
 	if(running){
 		switch(keycode){
 			case 49:
@@ -241,9 +261,26 @@ function download(filename, text) {
 
 ## Further Development
 
-(in email mention that click-scrolling elements aren't that hard)
+Having made some WebVTT files using this tool, there are some pretty cool possibilities to use them beyond their subtitle-cuing capacities.  One idea, imagined by Peter, was to navigate the video playhead by clicking on the corresponding word/sentence in the transcript.  By parsing the VTT track file as a data resource, this can most certainly be accomplished.  The following is a short-list of HTML DOM properties and CSS behaviors that should prove themselves helpful towards such end. 
+
+HTML:
+offsetHeight
+offsetTop
+offsetParent
+scrollTop
+document.height
+window.height
+etc...
+
+CSS:
+scroll-behavior: smooth
+
+More details:
+[HTML](https://www.w3schools.com/jsref/prop_element_offsettop.asp) (more in left side-bar) | [CSS](https://www.w3schools.com/howto/howto_css_smooth_scroll.asp)
+
+One potential hurdle in applying locally-hosted VTT tracks to remotely-hosted video is [cross-origin in/compatibility](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).  I have, for example, succeeded in applying local tracks to IEEE-hosted video using a local development server but not using a Laughing Squid server.
 
 ## Acknowledgements:
-https://www.markdownguide.org/extended-syntax
-https://www.markdownguide.org/extended-syntax
+
+Thanks to Peter Asaro for hiring me to write this tool and inspiring me enough to contribute further and Francis Tseng for showing me how to run a local development server from the terminal using the invaluable, `php -S localhost:8000`. Documentation made possible by [Markdown Guide](markdownguide.org)
 
