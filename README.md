@@ -59,9 +59,9 @@ Transcript Registration:
 This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***
 
 The word-grouping algorithm is roughly the following:
-1. test one
-2. test two 
-3. test three
+`1.` test one
+`2.` test two 
+`3.` test three
 
 <code>
 
@@ -146,6 +146,3 @@ This is %
 [all the code may be viewed by right clicking on the page and selecting (view source)]
 
 Further Develoment
-
-References:
-https://riptutorial.com/markdown/example/1805/numbered-lists
