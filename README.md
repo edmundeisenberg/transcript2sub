@@ -57,6 +57,12 @@ Video Registration:
 Transcript Registration:
 
 This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***
+
+The word-grouping algorithm is roughly the following:
+1. test one
+2. test two 
+3. test three
+
 <code>
 
 	$("#submit_transcript").click(function () {
@@ -67,16 +73,13 @@ This function specifically accounts for the HTML formatting of OHR interview tra
 
 			// create holder for parsed transcript
 		var parsed_transcript=transcript_text;
-
 		
-		//parsed_transcript += transcript_text;
-			// break up transcript by punctuation initially for smoother blocks
+			// break transcript into punctuated phrases, for more readable word groups later
 		parsed_transcript = parsed_transcript.split('?').join('?</p><p>');
 		parsed_transcript = parsed_transcript.split('!').join('!</p><p>');
 		parsed_transcript = parsed_transcript.split(".").join(".</p><p>");
 		parsed_transcript = parsed_transcript.split(",").join(",</p><p>");
 		parsed_transcript = parsed_transcript.split("–").join("–</p><p>");
-		//parsed_transcript += "</p>";
 
 		var phrases = parsed_transcript.split("</p><p>");
 		word_chunks=[];
@@ -143,3 +146,6 @@ This is %
 [all the code may be viewed by right clicking on the page and selecting (view source)]
 
 Further Develoment
+
+References:
+https://riptutorial.com/markdown/example/1805/numbered-lists
