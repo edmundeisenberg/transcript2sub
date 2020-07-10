@@ -33,46 +33,42 @@ Before the subtitling process can begin, the video and transcript must be submit
 
 Several *monitoring variables* at the global scope keep track of whether these media have been respectively registered and their statuses are mirrored by the red-and-yellow flags displayed in the TRACKS pane.
 
-<code>
-
+```
 		// change when source video, transcript are provided
 	var video_loaded = false;
 	var transcript_loaded = false;
 	var running=false;
-
-</code>
+```
 
 #### Video Registration
 
 As previously with the monitoring variables, video registration modifies a variable in the global scope, `video`.  On submitting the URL-input form, the following function modifies several DOM node objects, including the element with id, `#active_video` in which all `<video>` tags are appended.  Furthermore, parameters are defined here as well.
 
-<code>
+```
+$("#submit_mp4").click(function () {
 
-	$("#submit_mp4").click(function () {
-	
-		// load the video from link supplied	
-		var video_url = document.getElementById("mp4_url").value;
-		var video_html='<source src="' + video_url + '"/>';
-		$("#active_video").html(video_html);
+	// load the video from link supplied	
+	var video_url = document.getElementById("mp4_url").value;
+	var video_html='<source src="' + video_url + '"/>';
+	$("#active_video").html(video_html);
 
-		// resize the player
-		var video_width = $("#video_column").width();
-		document.getElementById("active_video").style.width = ''+video_width-12;
+	// resize the player
+	var video_width = $("#video_column").width();
+	document.getElementById("active_video").style.width = ''+video_width-12;
 
-		// hide the submission form and request flag 
-		document.getElementById("mp4_submission").style.display = "none";
-		document.getElementById("url_flag").style.display = "none";
-		video = $("#active_video")[0];
-		video.playbackRate= .75;
+	// hide the submission form and request flag 
+	document.getElementById("mp4_submission").style.display = "none";
+	document.getElementById("url_flag").style.display = "none";
+	video = $("#active_video")[0];
+	video.playbackRate= .75;
 
-		// check if both sources are supplied
-		video_loaded = true;
-		if(transcript_loaded){
-		   runTracker();
-		}
-	});
-	
-</code>
+	// check if both sources are supplied
+	video_loaded = true;
+	if(transcript_loaded){
+	   runTracker();
+	}
+});
+```
 
 #### Transcript Registration
 
@@ -83,66 +79,64 @@ The word-grouping algorithm goes something like this:<br>
 *2.* Each phrase is word-counted and, if fewer than 24 words, joined with the consecutive phrase.  This process repeats until the total word-count exceeds 24, comprising a complete word-group.<br>
 *3.* Each word group is embedded within a distinct `<p>` element.  This will allow for onclick events during the [time-stamping process](#UIUX).
 
-<code>
+```
+$("#submit_transcript").click(function () {
+	var transcript_text=document.getElementById("transcript_entry").value;
+		// hide submission elements
+	document.getElementById("transcript_submission").style.display = "none";
+	document.getElementById("transcript_flag").style.display = "none";
 
-	$("#submit_transcript").click(function () {
-		var transcript_text=document.getElementById("transcript_entry").value;
-			// hide submission elements
-		document.getElementById("transcript_submission").style.display = "none";
-		document.getElementById("transcript_flag").style.display = "none";
+		// create holder for parsed transcript
+	var parsed_transcript=transcript_text;
+	
+		// break transcript into punctuated phrases, for more readable word groups later
+	parsed_transcript = parsed_transcript.split('?').join('?</p><p>');
+	parsed_transcript = parsed_transcript.split('!').join('!</p><p>');
+	parsed_transcript = parsed_transcript.split(".").join(".</p><p>");
+	parsed_transcript = parsed_transcript.split(",").join(",</p><p>");
+	parsed_transcript = parsed_transcript.split("–").join("–</p><p>");
 
-			// create holder for parsed transcript
-		var parsed_transcript=transcript_text;
-		
-			// break transcript into punctuated phrases, for more readable word groups later
-		parsed_transcript = parsed_transcript.split('?').join('?</p><p>');
-		parsed_transcript = parsed_transcript.split('!').join('!</p><p>');
-		parsed_transcript = parsed_transcript.split(".").join(".</p><p>");
-		parsed_transcript = parsed_transcript.split(",").join(",</p><p>");
-		parsed_transcript = parsed_transcript.split("–").join("–</p><p>");
+	var phrases = parsed_transcript.split("</p><p>");
+	word_chunks=[];
 
-		var phrases = parsed_transcript.split("</p><p>");
-		word_chunks=[];
+	var id_count = 0;
+	var id_tag="";
 
-		var id_count = 0;
-		var id_tag="";
-
-			// basically creates blocks of MINIMUM 24 words each
-		for(i=0;i<phrases.length;i++){
-				// make sure not to cut off any special characters
-			if(phrases[i].length>2 && phrases[i].charAt(0) != "\""){
-			  word_chunk = phrases[i];
-				// check if meets minimum word count is met or adds more words to chunk
-			  while (word_chunk.split(" ").length<=24){
-				i++;
-					// add the next phrase
-				word_chunk+=" "+phrases[i]
-				phrases.push("");
-			  }
-		  
-			  tagged_chunk='</p><p>'+word_chunk;
-			  word_chunks.push(tagged_chunk);
-			  id_count++;
-			}else{
-			  last_index = word_chunks.length-1;
-			  word_chunks[last_index]+=phrases[i];
-			}
+		// basically creates blocks of MINIMUM 24 words each
+	for(i=0;i<phrases.length;i++){
+			// make sure not to cut off any special characters
+		if(phrases[i].length>2 && phrases[i].charAt(0) != "\""){
+		  word_chunk = phrases[i];
+			// check if meets minimum word count is met or adds more words to chunk
+		  while (word_chunk.split(" ").length<=24){
+			i++;
+				// add the next phrase
+			word_chunk+=" "+phrases[i]
+			phrases.push("");
+		  }
+	  
+		  tagged_chunk='</p><p>'+word_chunk;
+		  word_chunks.push(tagged_chunk);
+		  id_count++;
+		}else{
+		  last_index = word_chunks.length-1;
+		  word_chunks[last_index]+=phrases[i];
 		}
-	
-			// join all work chunks
-		render_transcript=word_chunks.join("");
-	
-			// and add them to DOM
-		$("#transcript_renderer").html('<p>' + render_transcript+'</p>');
-	
-			// check if both sources are supplied
-		transcript_loaded = true;
-		if (video_loaded){
-			runTracker();
-		}
-	})
+	}
 
-</code>
+		// join all work chunks
+	render_transcript=word_chunks.join("");
+
+		// and add them to DOM
+	$("#transcript_renderer").html('<p>' + render_transcript+'</p>');
+
+		// check if both sources are supplied
+	transcript_loaded = true;
+	if (video_loaded){
+		runTracker();
+	}
+})
+```
 
 ## Time-stamping Procedure
 
@@ -175,8 +169,7 @@ document.getElementById("download_vtt").addEventListener("click", function(){
 ```
 
 The above function only formats the accrued content into a single String, short of creating a valid file.  [Thankfully](https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server), the latter can be done using Javascript alone by embedding our text data using JS's native `encodeURIComponent()` into the `href` attribute of a single-use `<a>` element with a `download` attribute set to the filename:
-<code>
-
+```
 	function download(filename, text) {
 	  var element = document.createElement('a');
 		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -186,8 +179,7 @@ The above function only formats the accrued content into a single String, short 
 		element.click();
 		document.body.removeChild(element);
 	}
-</code>
-
+```
 
 ## Further Development
 
