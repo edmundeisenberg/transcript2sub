@@ -34,10 +34,12 @@ Before the subtitling process can begin, the video and transcript must be submit
 Several *monitoring variables* at the global scope keep track of whether these media have been respectively registered and their statuses are mirrored by the red-and-yellow flags displayed in the TRACKS pane.
 
 <code>
+
 		// change when source video, transcript are provided
 	var video_loaded = false;
 	var transcript_loaded = false;
 	var running=false;
+
 </code>
 
 #### Video Registration
@@ -69,6 +71,7 @@ As previously with the monitoring variables, video registration modifies a varia
 		   runTracker();
 		}
 	});
+	
 </code>
 
 #### Transcript Registration
