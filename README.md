@@ -59,7 +59,7 @@ Transcript Registration:
 This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***
 
 The word-grouping algorithm is roughly the following:
-`1.` test one
+*1.* test one
 `2.` test two 
 `3.` test three
 
