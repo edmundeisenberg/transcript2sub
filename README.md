@@ -148,8 +148,61 @@ This function *a)* enables the track-download button ([detailed below]) and
 
 #### Click Events
 
+#### Time-Stamp Calculator
+
+This is just a big function that converts a quantity in seconds* into a time-stamp in the format, *HH:MM:S.SSS*
+
+* Note: this may be a decimal
+```
+function convert_timestamp(seconds){
+  return "" + ("0"+(Math.floor(seconds/3600)%60)).slice(-2)+":"+("0"+(Math.ceil(seconds/60)-1)%60).slice(-2) + ":" + ("0"+Math.ceil(seconds%60)).slice(-2)+ (seconds%Math.floor(seconds)).toPrecision(3).substring(1,5);
+}
+```
+
 #### Video Speed Controls
 
+```
+	// keyboard input event handler case switch
+$(document).keypress(function(e) {
+	var keycode = e.which;
+	console.log(ee);
+	if(running){
+		switch(keycode){
+			case 49:
+				speed=.5;
+				break;
+			case 50:
+				speed=.75;
+				break;
+			case 51:
+				speed=1.0;
+				break;
+			case 52:
+				speed=1.25;
+				break;
+			case 53:
+				speed=1.5;
+				break;
+			case 54:
+				speed=1.75;
+				break;
+			case 55:
+				speed=2.0;
+				break;
+			case 56:
+				speed=2.25;
+				break;
+			case 57:
+				speed=2.5;
+				break;
+		}
+			// update heads-up display of speed
+		$("#signal").html(speed);
+			// change playback speed
+      	video.playbackRate=speed;
+	}
+});
+```
 
 ## VTT Output
 
@@ -170,15 +223,15 @@ document.getElementById("download_vtt").addEventListener("click", function(){
 
 The above function only formats the accrued content into a single String, short of creating a valid file.  [Thankfully](https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server), the latter can be done using Javascript alone by embedding our text data using JS's native `encodeURIComponent()` into the `href` attribute of a single-use `<a>` element with a `download` attribute set to the filename:
 ```
-	function download(filename, text) {
-	  var element = document.createElement('a');
-		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-		element.setAttribute('download', filename);
-		element.style.display = 'none';
-		document.body.appendChild(element);
-		element.click();
-		document.body.removeChild(element);
-	}
+function download(filename, text) {
+	var element = document.createElement('a');
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', filename);
+	element.style.display = 'none';
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+}
 ```
 
 ## Further Development
