@@ -56,12 +56,12 @@ Video Registration:
 
 Transcript Registration:
 
-This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***
+This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***  
 
 The word-grouping algorithm is roughly the following:
-*1.* test one
-`2.` test two 
-`3.` test three
+*1.* The transcript is broken up into phrases, determined by various punctuation marks, using `<p>` tags as delimiting characters.
+*2.* Each phrase is word-counted and, if fewer than 24 words, joined with the consecutive phrase.  This process continues until the 24 word threshold is exceeded, completing a word-group.
+*3.* Each word group is embedded within a distinct `<p>` element.  This will allow for onclick events during the [titling process](#UIUX).
 
 <code>
 
