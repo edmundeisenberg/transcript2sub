@@ -62,13 +62,10 @@
 
 </style>
 
-<head>
-<!-- 
-	include $
- -->
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-</head>
 <html>
+	<head>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	</head>
 	<body>
 		<div class='app_container'>
 			<div class='menu'>
@@ -128,59 +125,21 @@ var running=false;
 	// holder for video element
 var video;
 
-	// default speed
+	// default playback speed
 var speed=1.0;
 
-	// keyboard case switch
-$(document).keypress(function(e) {
-	var ee = e.which;
-	console.log(ee);
-	if(running){
-		switch(ee){
-			case 49:
-				speed=.5;
-				break;
-			case 50:
-				speed=.75;
-				break;
-			case 51:
-				speed=1.0;
-				break;
-			case 52:
-				speed=1.25;
-				break;
-			case 53:
-				speed=1.5;
-				break;
-			case 54:
-				speed=1.75;
-				break;
-			case 55:
-				speed=2.0;
-				break;
-			case 56:
-				speed=2.25;
-				break;
-			case 57:
-				speed=2.5;
-				break;
-		}
-			// update display
-		$("#signal").html(speed);
-			// change playback rate
-      	video.playbackRate=speed;
-	}
-});
-
 $("#submit_mp4").click(function () {
+
 	// load the video from link supplied
   var video_url = document.getElementById("mp4_url").value;
   var video_html='<source src="' + video_url + '"/>';
   $("#active_video").html(video_html);
+  
   	// resize the player
   var video_width = $("#video_column").width();
   document.getElementById("active_video").style.width = ''+video_width-12;
-	//
+  
+	// hide the submission form and request flag
   document.getElementById("mp4_submission").style.display = "none";
   document.getElementById("url_flag").style.display = "none";
 
@@ -202,16 +161,13 @@ $("#submit_transcript").click(function () {
 
 		// create holder for parsed transcript
 	var parsed_transcript=transcript_text;
-
 		
-	//parsed_transcript += transcript_text;
-		// break up transcript by punctuation initially for smoother blocks
+		// break transcript into punctuated phrases, for more readable word groups later
 	parsed_transcript = parsed_transcript.split('?').join('?</p><p>');
 	parsed_transcript = parsed_transcript.split('!').join('!</p><p>');
 	parsed_transcript = parsed_transcript.split(".").join(".</p><p>");
 	parsed_transcript = parsed_transcript.split(",").join(",</p><p>");
 	parsed_transcript = parsed_transcript.split("–").join("–</p><p>");
-	//parsed_transcript += "</p>";
 
 	var phrases = parsed_transcript.split("</p><p>");
 	word_chunks=[];
@@ -254,28 +210,69 @@ $("#submit_transcript").click(function () {
 	}
 })
 
+function runTracker(){
+  running = true;
+  document.getElementById("download_vtt").style.display = "block";
+  setInterval(function(){
+    video.play();
+  }, 100);
+}
+
 $("#transcript_renderer").on("click",'p',function(){
 		// hide the word chunk
     $(this).slideUp();
-    var additive_text = "";
+    var vtt_addition = "";
     current_timestamp = convert_timestamp(video.currentTime);
-    additive_text+=current_timestamp + "\n" + this.textContent.replace(/\r?\n|\r/g,"") + "\n\n" + current_timestamp + " --> ";
-
-    var vtt_text = document.getElementById("vtt_renderer").textContent + additive_text;
-    document.getElementById("vtt_renderer").textContent=vtt_text;
+    vtt_addition += current_timestamp + "\n" + this.textContent.replace(/\r?\n|\r/g,"") + "\n\n" + current_timestamp + " --> ";
+		//append the additive text onto the overall vtt content
+    var vtt_text = document.getElementById("vtt_renderer").textContent + vtt_addition;
+    document.getElementById("vtt_renderer").textContent = vtt_text;
 
   })
-
 
 function convert_timestamp(seconds){
   return "" + ("0"+(Math.floor(seconds/3600)%60)).slice(-2)+":"+("0"+(Math.ceil(seconds/60)-1)%60).slice(-2) + ":" + ("0"+Math.ceil(seconds%60)).slice(-2)+ (seconds%Math.floor(seconds)).toPrecision(3).substring(1,5);
 }
 
-// $("#download_vtt").click(function(){
-//   var blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});//
-//   //saveAs(blob, "hello world.txt");	//
-//   this.download="helloworld.txt";
-// })
+	// keyboard input event handler case switch
+$(document).keypress(function(e) {
+	var keycode = e.which;
+	if(running){
+		switch(keycode){
+			case 49:
+				speed=.5;
+				break;
+			case 50:
+				speed=.75;
+				break;
+			case 51:
+				speed=1.0;
+				break;
+			case 52:
+				speed=1.25;
+				break;
+			case 53:
+				speed=1.5;
+				break;
+			case 54:
+				speed=1.75;
+				break;
+			case 55:
+				speed=2.0;
+				break;
+			case 56:
+				speed=2.25;
+				break;
+			case 57:
+				speed=2.5;
+				break;
+		}
+			// update heads-up display of speed
+		$("#signal").html(speed);
+			// change playback speed
+      	video.playbackRate=speed;
+	}
+});
 
 // Start file download.
 document.getElementById("download_vtt").addEventListener("click", function(){
@@ -298,13 +295,5 @@ function download(filename, text) {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-}
-
-function runTracker(){
-  running = true;
-  document.getElementById("download_vtt").style.display = "block";
-  setInterval(function(){
-    video.play();
-  }, 100);
 }
 </script>
