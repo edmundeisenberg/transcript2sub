@@ -1,9 +1,5 @@
 Documentation for Robot History VTT tracker
 
-FORMAT THIS LATER
-
-(in email mention that click-scrolling elements aren't that hard)
-
 ## Premise
 
 A JS-based applet that breaks a long-form transcript into word-groups and facilitates manual, speed-controlled time-stamping of subtitle tracks.  Resulting subtitle tracks may be saved as VTT (virtual text track) and used in HTML5 video elements. 
@@ -18,15 +14,22 @@ The page layout of transcript2sub is divided into three modules.  These are: vid
 
 ![Screen-shot of the applet](assets/applet_screen.png)
 
-
-
 there is currently no mobile version of the applet.
+
+## Notes on the Code
+
+TRANSFER ANON FUNCTIONS INTO DEFINED FUNCTION 
+
+AND: VTT MODULE SHOULD SCROLL AS IT ACCUMULATES
+This is %
+
+[all the code may be viewed by right clicking on the page and selecting (view source)]
 
 ## Content Registration
 
 Before the UIUX becomes operable, the user must submit both a URL where the video is located and the full transcript body.  After this happens, 
 
-##### Video Registration
+#### Video Registration
 <code>
 
 	$("#submit_mp4").click(function () {
@@ -54,14 +57,14 @@ Before the UIUX becomes operable, the user must submit both a URL where the vide
 	});
 </code>
 
-##### Transcript Registration
+#### Transcript Registration
 
 This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***  
 
 The word-grouping algorithm goes something like this:<br>
 *1.* The transcript is broken up into phrases, determined by various punctuation marks, using `<p>` tags as delimiting characters.<br>
 *2.* Each phrase is word-counted and, if fewer than 24 words, joined with the consecutive phrase.  This process repeats until the total word-count exceeds 24, comprising a complete word-group.<br>
-*3.* Each word group is embedded within a distinct `<p>` element.  This will allow for onclick events during the [titling process](#UIUX).
+*3.* Each word group is embedded within a distinct `<p>` element.  This will allow for onclick events during the [time-stamping process](#UIUX).
 
 <code>
 
@@ -124,25 +127,21 @@ The word-grouping algorithm goes something like this:<br>
 
 </code>
 
-## UIUX
+## Time-stamping Procedure
+
+#### runTracker()
+
+#### Click Events
+
+#### Video Speed Controls
 
 
-
-### Video
+## VTT Output
 
 There are two functions of the video module. The first function is dedicated to 
 
-### Transcript
 
-### Tracks
-There are three modules in the application corresponding to the video, the 
+## Further Development
 
-## Code
-TRANSFER ANON FUNCTIONS INTO DEFINED FUNCTION 
+(in email mention that click-scrolling elements aren't that hard)
 
-AND: VTT MODULE SHOULD SCROLL AS IT ACCUMULATES
-This is %
-
-[all the code may be viewed by right clicking on the page and selecting (view source)]
-
-Further Develoment
