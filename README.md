@@ -146,7 +146,11 @@ The word-grouping algorithm goes something like this:<br>
 
 ## Time-stamping Procedure
 
+When the video and transcript have both been successfully inputted, `runTracker()` is invoked.
+
 #### runTracker()
+
+This function *a)* enables the track-download button ([detailed below]) and 
 
 #### Click Events
 
@@ -156,6 +160,37 @@ The word-grouping algorithm goes something like this:<br>
 ## VTT Output
 
 There are two functions of the video module. The first function is dedicated to 
+
+The main objective of the applet is to produce a ready-to-use VTT file.  This means the time-stamped text content must be converted to a downloadable UTF-8 encoded file.
+
+<code>
+
+	document.getElementById("download_vtt").addEventListener("click", function(){
+			//remove last line of vtt content
+		var text = document.getElementById("vtt_renderer").textContent;
+		var text_lines = text.split('\n');
+				// thanks https://love2dev.com/blog/javascript-remove-from-array/
+		text_lines.pop();
+		text = text_lines.join('\n');
+		var filename = "tracks.vtt";
+	   download(filename, text);
+	}, false);
+
+</code>
+
+The above function only formats the accrued content into a single String, short of creating a valid file.  [Thankfully](https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server), the latter can be done using Javascript alone by embedding our text data using JS's native `encodeURIComponent()` into the `href` attribute of a single-use `<a>` element with a `download` attribute set to the filename:
+<code>
+
+	function download(filename, text) {
+	  var element = document.createElement('a');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		element.setAttribute('download', filename);
+		element.style.display = 'none';
+		document.body.appendChild(element);
+		element.click();
+		document.body.removeChild(element);
+	}
+</code>
 
 
 ## Further Development
