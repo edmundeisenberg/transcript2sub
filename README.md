@@ -14,7 +14,7 @@ The page layout of transcript2sub is divided into three modules.  These are: vid
 
 ![Screen-shot of the applet](assets/applet_screen.png)
 
-there is currently no mobile version of the applet.
+Currently there is no mobile version of the applet.
 
 ## Notes on the Code
 
@@ -27,9 +27,23 @@ This is %
 
 ## Content Registration
 
-Before the UIUX becomes operable, the user must submit both a URL where the video is located and the full transcript body.  After this happens, 
+Before the subtitling process can begin, the video and transcript must be submitted and registered into memory.  Upon submitting each respectively, the status of the other is evaluated and only when both have been registered can the subsequent phase begin.
+
+#### Monitoring Variables
+
+Several *monitoring variables* at the global scope keep track of whether these media have been respectively registered and their statuses are mirrored by the red-and-yellow flags displayed in the TRACKS pane.
+
+<code>
+		// change when source video, transcript are provided
+	var video_loaded = false;
+	var transcript_loaded = false;
+	var running=false;
+</code>
 
 #### Video Registration
+
+As previously with the monitoring variables, video registration modifies a variable in the global scope, `video`.  On submitting the URL-input form, the following function modifies several DOM node objects, including the element with id, `#active_video` in which all `<video>` tags are appended.  Furthermore, parameters are defined here as well.
+
 <code>
 
 	$("#submit_mp4").click(function () {
