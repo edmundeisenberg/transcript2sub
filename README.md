@@ -71,7 +71,7 @@ $("#submit_mp4").click(function () {
 
 #### Transcript Registration
 
-This function specifically accounts for the HTML formatting of OHR interview transcripts as found here: *** FIND***  
+This function specifically accounts for the HTML formatting of OHR interview transcripts *scraped* from HTML source (see [Intended Use](#Intended-Use)). 
 
 The word-grouping algorithm goes something like this:<br>
 *1.* The transcript is broken up into phrases, determined by various punctuation marks, using `<p>` tags as delimiting characters.<br>
