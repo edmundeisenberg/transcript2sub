@@ -18,12 +18,7 @@ Currently there is no mobile version of the applet.
 
 ## Notes on the Code
 
-TRANSFER ANON FUNCTIONS INTO DEFINED FUNCTION 
-
-AND: VTT MODULE SHOULD SCROLL AS IT ACCUMULATES
-This is %
-
-[all the code may be viewed by right clicking on the page and selecting (view source)]
+Dependencies: JQuery
 
 ## Note on the VTT Format
 
@@ -277,6 +272,8 @@ scroll-behavior: smooth
 
 More details:
 [HTML](https://www.w3schools.com/jsref/prop_element_offsettop.asp) (more in left side-bar) | [CSS](https://www.w3schools.com/howto/howto_css_smooth_scroll.asp)
+
+Information on HTML5 video playback and navigation may be found on [w3schools.com](w3schools.com) and [developer.mozilla.org](developer.mozilla.org).
 
 One potential hurdle in applying locally-hosted VTT tracks to remotely-hosted video is [cross-origin in/compatibility](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).  I have, for example, succeeded in applying local tracks to IEEE-hosted video using a local development server but not using a Laughing Squid server.
 
