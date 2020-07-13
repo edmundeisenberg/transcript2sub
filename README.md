@@ -6,7 +6,7 @@ A JS-based applet that breaks a long-form transcript into word-groups and facili
 
 ## Intended Use
 
-This app was designed to provide shortcut-assisted manual time-stamping of subtitle tracks based on human-transcribed text.
+This app was designed to provide shortcut-assisted manual time-stamping of subtitle tracks based on human-transcribed text.  The app is designed specifically to use transcripts copied or scraped from [this wiki repository](https://ethw.org/Oral-History:Robotics_History:_Narratives_and_Networks) but will work with any form of transcript text.
 
 ## Page Layout
 
